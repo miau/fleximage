@@ -13,4 +13,10 @@ class FleximageTempImageTest < Test::Unit::TestCase
     assert File.exists?(a2.file_path)
     assert !File.exists?("#{RAILS_ROOT}/tmp/fleximage/#{a2.image_file_temp}")
   end
+
+  def test_should_prevent_directory_traversal_attacks
+    a1 = Avatar.new(:image_file_temp => '../fleximage/photo.jpg')
+    assert !a1.save
+    assert_equal nil, a1.image_file_temp
+  end
 end
